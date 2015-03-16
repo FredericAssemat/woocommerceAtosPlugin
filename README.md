@@ -1,10 +1,10 @@
 # woocommerceAtosPlugin
-Wordpress plugin that enable Atos payment for Woocommerce.
+
+Wordpress plugin that enable Atos payment for Woocommerce. **This fork is compatible with WooCommerce >= 2.3.6**
 
 Install
 -------
-Depending on your web server, copy the correct binary files on your server.
-If you are on Linux, and want to know if you run 32 or 64 bits, just type:
+Depending on your web server, copy the correct binary files on your server (request and response). If you are on Linux, and want to know if you run 32 or 64 bits, just type:
 
     getconf LONG_BIT
 
@@ -39,12 +39,6 @@ Credit card success infos
 
     Credit card n°: 4974934125497800
     Crypt key: 600
-    Expiration date: anything in the future
-
-Credit card failed infos
-
-    Credit cart n°: 4974934125497800
-    Crypt key: 655
     Expiration date: anything in the future
 
 For 3D secure test

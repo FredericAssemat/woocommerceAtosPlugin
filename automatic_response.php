@@ -8,15 +8,11 @@ function woocommerce_atos_automatic_response( $atts ) {
 
 	if ( isset( $_POST['DATA'] ) ) {
 		$transauthorised = false;
-
 		$data = escapeshellcmd( sanitize_text_field($_POST['DATA']) );
-
 		$message = sprintf('message=%s', $data);
 		$pathfile = sprintf('pathfile=%s', $atos->pathfile);
-
 		$path_bin_response = $atos->path_bin_response;
 		$result = exec( "$path_bin_response $pathfile $message" );
-
 		$results = explode( '!', $result );
 
 		$response = array(
@@ -53,23 +49,26 @@ function woocommerce_atos_automatic_response( $atts ) {
 			'capturemode'        => $results[31],
 			'data'               => $results[32]
 		);
-		$order    = &new WC_order( $response['orderid'] );
-		if ( ( $response['code'] == '' ) && ( $response['error'] == '' ) ) {
 
+		//die(print_r($response));
+
+		$order = new WC_order( $response['orderid'] );
+		if (( $response['responsecode'] == '' )) {
 			$atos->msg['class']   = 'error';
 			$atos->msg['message'] = __('Thank you for shopping with us. However, the transaction has been declined.', 'woocommerce-atos');
 
-		} elseif ( $response['code'] != 0 ) {
+		} elseif ( $response['responsecode'] != 0 ) {
 			$atos->msg['class']   = 'error';
 			$atos->msg['message'] = __('Thank you for shopping with us. However, the transaction has been declined.', 'woocommerce-atos');
 
 		} else {
-
-			if ( $response['code'] == 00 ) {
-
+			if ($response['responsecode'] == 00) {
 				$transauthorised = true;
+				$order->update_status('completed');
+				$order->payment_complete($response['transactionid']);
 				$order->add_order_note( __('Payment accepted by the bank', 'woocommerce-atos') );
-				$order->payment_complete();
+				// Remove cart
+             	WC()->cart->empty_cart();
 			}
 
 		}

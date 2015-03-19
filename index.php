@@ -24,7 +24,7 @@ if (! class_exists( 'WooCommerce' )) {
 }
 
 define('WOOCOMMERCEATOS_PHP_VERSION', '5.4');
-define('WOOCOMMERCE_MINIMUM_VERSION', '2.3.6');
+define('WOOCOMMERCE_MINIMUM_VERSION', '2.3.0');
 
 if(!version_compare(PHP_VERSION, WOOCOMMERCEATOS_PHP_VERSION, '>=')) {
 	function woocommerce_required_version(){

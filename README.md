@@ -1,38 +1,78 @@
 # woocommerceAtosPlugin
 
-Wordpress plugin that enable Atos payment for Woocommerce. **This fork is compatible with WooCommerce >= 2.3.6**
+Wordpress plugin that enable Atos payment for Woocommerce. 
 
-Install
--------
-Depending on your web server, copy the correct binary files on your server (request and response). If you are on Linux, and want to know if you run 32 or 64 bits, just type:
+**This fork is compatible with WooCommerce >= 2.3**
 
-    getconf LONG_BIT
 
-For these binaries, don't forget to add execution rights.
 
-    chmod +x
+## Atos folder structure
+```
+/var/www/atos
+├── bin
+│   ├── request
+│   └── response
+└── param
+    ├── certif.fr.XXXXXXXXXXX
+    ├── parmcom.XXXXXXXXXXX
+    ├── parmcom.webaffaires
+    └── pathfile
+```
+Where `XXXXXXXXXXX` is your merchant id provided by your bank.
 
-Put your params files too on your web server.
- 
-To use the credit cards logos given with this plugin, change images path in your param/pathfile.
+### Bin
 
+When requested, your bank must provide you a set of binary files, ie:
+
+    request_2.6.9_3.4.2
+    request_64b_1
+    ...
+    response_2.6.9_3.4.2
+    response_64b_1
+
+Depending on your web server architecture, you have to copy request/response binaries into the `bin/` folder. If you don't know which one of theses binaries is the correct one, follow this procedure
+
+- Copy all binary file into the `bin/`
+- Check the print shared library dependencies for EACH request binary, ie.
+```    
+$ ldd request_64b_1
+```
+- If the output say `not a dynamic executable` remove it, else you just find the right one. 
+- Give executable permission for both binaries
+```
+$ chmod +x response request
+```
+
+### Param
+
+#### pathfile
+
+`F_DEFAULT!`, `F_PARAM!` and `F_CERTIFICATE!` must provide absolute path, ie.
+```
+F_DEFAULT!/var/www/atos/param/parmcom.webaffaires!
+F_PARAM!/var/www/atos/param/parmcom!
+F_CERTIFICATE!/var/www/atos/param/certif!
+```
+To use credit cards logos given with this plugin, change images path to
 ```
 D_LOGO!/wp-content/plugins/woocommerceAtos/images/!
 ```
 
-Take a look at the examples atos files provided with this plugin to put the correct values in **YOUR** param files.
+## Backoffice Wordpress
 
-**Automatic response**
-
-Create a page that contains shortcode above and fill the automatic_response_url field in admin.
-
+- Create a page that contains shortcode below and copy generated permalink
 ```
 [woocommerce_atos_automatic_response]
 ```
-----------
+- Activate "WooCommerceAtos" plugin and go to settings
+- Fill parameters fields with your own values
+- Paste your permalink into `automatic_response_url` field.
+- Save
 
-Test mode
----------
+
+
+## Test mode
+
 Use these values to test your installation.
 
 Credit card success infos
@@ -40,21 +80,3 @@ Credit card success infos
     Credit card n°: 4974934125497800
     Crypt key: 600
     Expiration date: anything in the future
-
-For 3D secure test
-
-    Valid password: 00000000
-    Invalid password: anything else
-
-Security
----------
-For security purpose, the param files **must** be located somewhere outside the webroot of your site.
-Example: if your wordpress installation is something like
-```
-/var/www/wordpress
-```
-Then your param files should be located in:
-```
-/var/atos/param/ 
-```
- 
